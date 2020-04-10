@@ -24,11 +24,12 @@
 </template>
 
 <script>
-import { auth } from "../firebase";
+import { db, auth } from "../firebase";
 export default {
   data() {
     return {
       auth: auth,
+      //   db: db,
       newUser: false,
       email: "",
       password: "",
@@ -41,7 +42,17 @@ export default {
       this.loading = true;
       try {
         if (this.newUser) {
-          await auth.createUserWithEmailAndPassword(this.email, this.password);
+          const userObject = await auth.createUserWithEmailAndPassword(
+            this.email,
+            this.password
+          );
+          await db
+            .collection("users")
+            .doc(userObject.user.uid)
+            .set({
+              email: this.email,
+              password: this.password,
+            });
         } else {
           await auth.signInWithEmailAndPassword(this.email, this.password);
         }
