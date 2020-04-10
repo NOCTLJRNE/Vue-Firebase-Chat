@@ -10,7 +10,7 @@ import { auth } from "../firebase";
 export default {
   props: {
     user: {
-      required: false,
+      required: true,
     },
   },
   methods: {
