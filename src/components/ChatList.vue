@@ -26,7 +26,8 @@ export default {
   },
   firestore() {
     return {
-      chats: db.collection("chats").where("owner", "==", this.uid),
+      chats: db.collection("chats"),
+      //   chats: db.collection("chats").where("owner", "==", this.uid),
     };
   },
 
