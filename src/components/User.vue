@@ -7,7 +7,7 @@
 <script>
 import { ref } from "@vue/composition-api";
 import { auth } from "../firebase";
-import { firestore } from "firebase";
+
 export default {
   setup() {
     const user = ref(null);

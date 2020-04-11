@@ -1,7 +1,7 @@
 <template>
   <aside>
     <h3>Sign In Anonymously</h3>
-    <button v-on:click="auth.signInAnonymously()">Sign In</button>
+    <button v-on:click="userSignInAnonymously">Sign In</button>
     <br />
     <h3>{{ newUser ? "Sign up new account" : "Sign in with E-mail" }}</h3>
     <a href="#" v-on:click="newUser = !newUser">{{
@@ -28,7 +28,7 @@ import { db, auth } from "../firebase";
 export default {
   data() {
     return {
-      auth: auth,
+      //   auth: auth, // need to define auth here if auth.signInAnonymously() is passed inline with v-on:click
       //   db: db,
       newUser: false,
       email: "",
@@ -60,6 +60,9 @@ export default {
         this.errorMessage = error;
       }
       this.loading = false;
+    },
+    userSignInAnonymously() {
+      auth.signInAnonymously();
     },
   },
 };

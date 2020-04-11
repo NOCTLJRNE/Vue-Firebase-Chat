@@ -1,6 +1,9 @@
 <template>
   <div>
     <button v-on:click="createChatRoom">Create Chat Room</button>
+    <ul>
+      <li v-for="chat in chats" :key="chat.id">{{ chat.id }}</li>
+    </ul>
   </div>
 </template>
 
@@ -12,6 +15,17 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      chats: [],
+    };
+  },
+  firestore() {
+    return {
+      chats: db.collection("chats").where("owner", "==", this.uid),
+    };
+  },
+
   methods: {
     async createChatRoom() {
       const newChat = await db.collection("chats").add({
@@ -19,6 +33,7 @@ export default {
         owner: this.uid,
         members: [this.uid],
       });
+      console.log(newChat);
     },
   },
 };

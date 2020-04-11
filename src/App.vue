@@ -9,9 +9,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { auth } from "./firebase";
 
-console.log(auth);
 @Component({
   components: {},
 })
