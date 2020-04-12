@@ -31,7 +31,7 @@
       <hr />
       <button
         class="button is-success"
-        v-bind:disabled="!newTextMessage || loading"
+        v-bind:disabled="(!newTextMessage && !newAudio) || loading"
         v-on:click="sendMessage(userProp.uid)"
       >
         Send
@@ -110,8 +110,11 @@ export default {
       // register event listener dataavailable & stop https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/ondataavailable
       var chunks = [];
 
-      this.recorder.onstop = function(e) {
-        vm.newAudio = new Blob(chunks);
+      //   this.recorder.onstop = function(e) {
+      //     vm.newAudio = new Blob(chunks);
+      //   };
+      this.recorder.onstop = (e) => {
+        this.newAudio = new Blob(chunks);
       };
 
       this.recorder.ondataavailable = function(e) {
