@@ -20,14 +20,7 @@
         v-model="newTextMessage"
         placeholder="Say something :D"
         class="input"
-        v-on:keyup.enter="sendMessage(userProp.uid)"
       />
-      <hr />
-      <h5>Record Audio</h5>
-      <button v-if="!recorder" v-on:click="record">Record</button>
-      <button v-else v-on:click="stop">Stop</button>
-      <audio v-if="newAudio" :src="newAudioURL" controls></audio>
-      <hr />
       <button
         class="button is-success"
         v-bind:disabled="!newTextMessage || loading"
@@ -53,8 +46,6 @@ export default {
       messages: [],
       newTextMessage: "",
       loading: false,
-      newAudio: null, // new audio message (BLOB)
-      recorder: null, // recorder instance
     };
   },
   firestore() {
@@ -64,48 +55,17 @@ export default {
   },
   methods: {
     async sendMessage(uid) {
-      if (this.newTextMessage) {
-        this.loading = true;
+      this.loading = true;
 
-        //   const { id: messageID } = this.messagesCollection.doc();
-        //   await this.messagesCollection.doc(messageID).set({
-        await this.messagesCollection.add({
-          createdAt: Date.now(),
-          sender: uid,
-          text: this.newTextMessage,
-        });
-        this.loading = false;
-        this.newTextMessage = "";
-      }
-    },
-    async record() {
-      this.recorder = null;
-      // access to user media https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-      let stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: false,
+      //   const { id: messageID } = this.messagesCollection.doc();
+      //   await this.messagesCollection.doc(messageID).set({
+      await this.messagesCollection.add({
+        createdAt: Date.now(),
+        sender: uid,
+        text: this.newTextMessage,
       });
-      // instantiate new recodrder
-      this.recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
-      // register event listener dataavailable & stop https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/ondataavailable
-      var chunks = [];
-
-      this.recorder.onstop = function(e) {
-        this.newAudio = new Blob(chunks);
-        console.log(this.newAudio);
-      };
-
-      this.recorder.ondataavailable = function(e) {
-        if (e.data.size > 0) {
-          chunks.push(e.data);
-        }
-      };
-      // start the recording
-      this.recorder.start();
-    },
-    async stop() {
-      this.recorder.stop();
-      this.recorder = null;
+      this.loading = false;
+      this.newTextMessage = "";
     },
   },
   computed: {
@@ -117,9 +77,6 @@ export default {
         .collection("chats")
         .doc(`${this.chatRoomID}`)
         .collection("messages");
-    },
-    newAudioURL() {
-      return URL.createObjectURL(this.newAudio);
     },
   },
 };
@@ -140,12 +97,12 @@ ul {
 li {
   display: flex;
 }
-.mine {
+/* .mine {
   display: flex;
   justify-content: flex-start;
 }
 .yours {
   display: flex;
   justify-content: flex-end;
-}
+} */
 </style>

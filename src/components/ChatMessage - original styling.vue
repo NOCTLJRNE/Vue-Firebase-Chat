@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style scoped>
-/* .message {
+.message {
   background: #dddddd;
   color: black;
   margin-left: auto;
@@ -28,27 +28,22 @@ export default {
   border-radius: 5px;
   padding: 12px;
   display: inline-block;
-
 }
 .ownedMessage {
   margin-right: auto;
   margin-left: 10px;
   background: #91bbff;
-} */
-.message {
+}
+/* .message {
   background: #dddddd;
   color: black;
-  /* margin-left: auto; */
-  /* margin-right: 10px; */
   border-radius: 5px;
   padding: 12px;
   display: inline-block;
 }
 .ownedMessage {
-  /* margin-right: auto;
-  margin-left: 10px; */
   background: #91bbff;
-}
+} */
 .sender {
   font-size: 0.5rem;
 }
