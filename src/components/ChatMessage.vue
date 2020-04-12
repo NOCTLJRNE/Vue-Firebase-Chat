@@ -2,6 +2,7 @@
   <div class="message" :class="{ ownedMessage: owned }">
     {{ message.text }}
     <br />
+    <audio v-if="message.audioURL" :src="message.audioURL" controls></audio>
     <span class="sender"> sent by {{ message.sender }} </span>
   </div>
 </template>

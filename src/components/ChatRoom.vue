@@ -26,6 +26,7 @@
       <h5>Record Audio</h5>
       <button v-if="!recorder" v-on:click="record">Record</button>
       <button v-else v-on:click="stop">Stop</button>
+      <br />
       <audio v-if="newAudio" :src="newAudioURL" controls></audio>
       <hr />
       <button
@@ -42,7 +43,7 @@
 <script>
 import User from "./User.vue";
 import ChatMessage from "./ChatMessage.vue";
-import { db } from "../firebase";
+import { db, storage } from "../firebase";
 export default {
   components: {
     User,
@@ -60,25 +61,44 @@ export default {
   firestore() {
     return {
       messages: this.messagesCollection.orderBy("createdAt").limitToLast(10),
+      //   https://firebase.google.com/docs/database/rest/retrieve-data?hl=vi
     };
   },
   methods: {
     async sendMessage(uid) {
-      if (this.newTextMessage) {
+      if (this.newTextMessage || this.newAudio) {
+        let audioURL = null;
         this.loading = true;
 
-        //   const { id: messageID } = this.messagesCollection.doc();
-        //   await this.messagesCollection.doc(messageID).set({
-        await this.messagesCollection.add({
+        const { id: messageID } = this.messagesCollection.doc();
+
+        if (this.newAudio) {
+          // Create a root reference
+          var storageRef = storage.ref("chats");
+
+          // Create a reference to 'mountains.jpg'
+
+          var fileRef = storageRef
+            .child(this.chatRoomID)
+            .child(`${messageID}.wav`);
+          await fileRef.put(this.newAudio);
+          this.newAudio = null;
+          audioURL = await fileRef.getDownloadURL();
+        }
+
+        await this.messagesCollection.doc(messageID).set({
+          // await this.messagesCollection.add({
           createdAt: Date.now(),
           sender: uid,
           text: this.newTextMessage,
+          audioURL,
         });
-        this.loading = false;
-        this.newTextMessage = "";
       }
+      this.loading = false;
+      this.newTextMessage = "";
     },
     async record() {
+      let vm = this;
       this.recorder = null;
       // access to user media https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
       let stream = await navigator.mediaDevices.getUserMedia({
@@ -91,8 +111,7 @@ export default {
       var chunks = [];
 
       this.recorder.onstop = function(e) {
-        this.newAudio = new Blob(chunks);
-        console.log(this.newAudio);
+        vm.newAudio = new Blob(chunks);
       };
 
       this.recorder.ondataavailable = function(e) {
