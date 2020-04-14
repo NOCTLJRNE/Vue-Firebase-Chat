@@ -44,6 +44,7 @@ export default {
   border-radius: 5px;
   padding: 12px;
   display: inline-block;
+  box-shadow: 0.4em 0.4em 0.75em gray;
 }
 .ownedMessage {
   /* margin-right: auto;
